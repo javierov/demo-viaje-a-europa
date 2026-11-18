@@ -73,10 +73,10 @@ section[hidden],[hidden]{display:none!important}
 .bcd b{color:var(--steel2)}
 @media (prefers-reduced-motion:reduce){.bnr img,.pl,.cn,.ctr .dg span{animation:none}.cn:first-of-type{opacity:1}.bnr img:first-child{opacity:1}.pl{left:0}}
 /* inicio */
-.hh{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:start;padding:14px 20px 0}
-.ctr{text-align:center;padding-top:4px;grid-row:1;grid-column:2}
+.hh{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:start;padding:20px 20px 0}
+.ctr{text-align:center;padding-top:0;grid-row:1;grid-column:2}
 .hh .brand{grid-column:1}
-.hs{grid-column:1/-1;margin-top:-6px}
+.hs{grid-column:1/-1;margin-top:0}
 .sub{white-space:normal}
 .ctr .dg{display:flex;gap:3px;justify-content:center;perspective:300px}
 .ctr .dg span{position:relative;width:27px;height:38px;border-radius:5px;background:linear-gradient(180deg,#252a33 0 50%,#1b1f27 50%);border:1px solid var(--line2);color:#f3f5f8;font-size:25px;font-weight:700;line-height:37px;font-variant-numeric:tabular-nums;box-shadow:inset 0 1px 0 rgb(255 255 255/.07),0 2px 4px rgb(0 0 0/.5);transform-origin:50% 50%;animation:fl .7s cubic-bezier(.3,.6,.3,1) both}
@@ -84,9 +84,9 @@ section[hidden],[hidden]{display:none!important}
 .ctr .dg span::after{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:rgb(0 0 0/.75)}
 .ctr .dg span::before{content:"";position:absolute;top:50%;width:3px;height:6px;margin-top:-3px;left:-2px;border-radius:1px;background:#3a414d}
 .ctr .dg em{align-self:flex-end;font-style:normal;font-size:13px;color:var(--soft);margin-left:2px}
-.ctr small{display:block;font-size:11px;color:var(--soft);margin-top:5px;line-height:1.2}
+.ctr small{display:block;font-size:10.5px;color:var(--soft);margin-top:3px;line-height:1.15;white-space:nowrap}
 @keyframes fl{0%{transform:rotateX(-90deg);opacity:.3}60%{transform:rotateX(12deg)}100%{transform:none;opacity:1}}
-.brand{font-size:clamp(28px,8.4vw,36px);font-weight:800;letter-spacing:-.03em;line-height:1.05;color:var(--steel);margin:0}
+.brand{font-size:30px;font-weight:800;letter-spacing:-.035em;line-height:.98;color:#b5cbf0;margin:0;white-space:nowrap;min-width:0;overflow:hidden}
 .sub{margin:6px 0 0;font-size:13px;color:#fff}
 .sub2{margin:1px 0 0;font-size:12.5px;color:var(--soft)}
 .cdp{flex:none;margin-top:6px;border:1px solid var(--line2);border-radius:999px;padding:4px 11px;font-size:13px;font-weight:600;white-space:nowrap;color:var(--soft)}
@@ -643,6 +643,26 @@ renderRes();renderPrep();resetForm();route();fixImgs(document);
 /* sin conexión: solo en la web publicada */
 if("serviceWorker" in navigator&&/github\.io$|pages\.dev$/.test(location.hostname)){try{navigator.serviceWorker.register("sw.js").catch(()=>{})}catch(e){}}
 }
+</script>
+<script>
+/* título en una sola línea: ajusta el tamaño al hueco disponible */
+(function(){const t=document.querySelector(".brand");if(!t)return;
+function fit(){t.style.fontSize="60px";const r=t.clientWidth/t.scrollWidth;t.style.fontSize=Math.max(20,Math.min(60,Math.floor(60*r*0.98)))+"px"}
+function align(){const d=document.querySelector("#count .dg");t.style.marginTop="0px";if(!d)return;const a=t.getBoundingClientRect(),b=d.getBoundingClientRect();
+/* centro de las letras (sin la parte que baja de la p) con el centro de las fichas */
+const cap=a.height*0.08;t.style.marginTop=Math.round(((b.top+b.height/2)-(a.top+a.height/2-cap))/ (parseFloat(getComputedStyle(document.documentElement).zoom)||1))+"px"}
+function balance(){const hh=t.parentElement,bn=document.querySelector(".bnr"),hs=document.querySelector(".hs"),d=document.querySelector("#count .dg");if(!bn||!hs||!d)return;
+const z=parseFloat(getComputedStyle(document.documentElement).zoom)||1;hh.style.paddingTop="";
+for(let i=0;i<2;i++){const r=t.getBoundingClientRect(),A=r.top-bn.getBoundingClientRect().bottom,B=hs.getBoundingClientRect().top-r.bottom;
+const p=parseFloat(getComputedStyle(hh).paddingTop)+(B-A)/z;hh.style.paddingTop=Math.max(6,Math.round(p))+"px"}
+const MIN=18;hs.style.marginTop="";const r=t.getBoundingClientRect(),A=(r.top-bn.getBoundingClientRect().bottom)/z,B=(hs.getBoundingClientRect().top-r.bottom)/z;
+if(A<MIN)hh.style.paddingTop=(parseFloat(hh.style.paddingTop)+MIN-A)+"px";if(B<MIN)hs.style.marginTop=(MIN-B)+"px"}
+function hang(){/* la etiqueta "días para el viaje" cuelga junto a la línea de ciudades, sin empujarla */
+const c=document.getElementById("count"),l=c&&c.querySelector("small"),hs=document.querySelector(".hs");if(!l||!hs)return;
+const z=parseFloat(getComputedStyle(document.documentElement).zoom)||1;c.style.marginBottom="";let sp=hs.querySelector(".hang");if(!sp){sp=document.createElement("span");sp.className="hang";hs.prepend(sp)}
+const L=l.getBoundingClientRect().height/z+3,W=c.getBoundingClientRect().width/z+10;c.style.marginBottom=(-L)+"px";sp.style.cssText=`float:right;width:${W}px;height:${L}px;margin-right:-0px`}
+function run(){fit();align();hang();balance()}
+run();addEventListener("resize",run);document.fonts&&document.fonts.ready.then(run);setTimeout(run,600)})();
 </script>
 </body>
 </html>
