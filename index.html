@@ -659,7 +659,7 @@ function route(){
   const id=["secretos","practico","gastos"].includes(h)?h:"viaje";
   show(id);
   if(id==="practico")fxLoad();
-  if(id==="viaje")renderHome();if(id==="secretos")renderSecrets();if(id==="gastos")renderG();
+  if(id==="viaje"){renderHome();requestAnimationFrame(()=>window.euFitTitle&&window.euFitTitle())}if(id==="secretos")renderSecrets();if(id==="gastos")renderG();
   if(scTo==="b-wx"){const k=WX.findIndex(r=>r[0]===ftCity()),w=$("wx");if(k>0)w.scrollLeft=w.children[k].offsetLeft-w.firstElementChild.offsetLeft}
   if(scTo){const el=$(scTo);scTo="";setTimeout(()=>el&&el.scrollIntoView({behavior:"smooth",block:"start"}),60)}else window.scrollTo({top:0});
   requestAnimationFrame(carState);
@@ -676,7 +676,7 @@ if("serviceWorker" in navigator&&/github\.io$|pages\.dev$/.test(location.hostnam
 <script>
 /* título en una sola línea: ajusta el tamaño al hueco disponible */
 (function(){const t=document.querySelector(".brand");if(!t)return;
-function fit(){t.style.fontSize="60px";const r=t.clientWidth/t.scrollWidth;t.style.fontSize=Math.max(20,Math.min(60,Math.floor(60*r*0.98)))+"px"}
+function fit(){if(!t.clientWidth)return;t.style.fontSize="60px";const r=t.clientWidth/t.scrollWidth;t.style.fontSize=Math.max(20,Math.min(60,Math.floor(60*r*0.98)))+"px"}
 function align(){const d=document.querySelector("#count .dg");t.style.marginTop="0px";if(!d)return;const a=t.getBoundingClientRect(),b=d.getBoundingClientRect();
 /* centro de las letras (sin la parte que baja de la p) con el centro de las fichas */
 const cap=a.height*0.08;t.style.marginTop=Math.round(((b.top+b.height/2)-(a.top+a.height/2-cap))/ (parseFloat(getComputedStyle(document.documentElement).zoom)||1))+"px"}
@@ -690,7 +690,8 @@ function hang(){/* la etiqueta "días para el viaje" cuelga junto a la línea de
 const c=document.getElementById("count"),l=c&&c.querySelector("small"),hs=document.querySelector(".hs");if(!l||!hs)return;
 const z=parseFloat(getComputedStyle(document.documentElement).zoom)||1;c.style.marginBottom="";let sp=hs.querySelector(".hang");if(!sp){sp=document.createElement("span");sp.className="hang";hs.prepend(sp)}
 const L=l.getBoundingClientRect().height/z+3,W=c.getBoundingClientRect().width/z+10;c.style.marginBottom=(-L)+"px";sp.style.cssText=`float:right;width:${W}px;height:${L}px;margin-right:-0px`}
-function run(){fit();align();hang();balance()}
+function run(){if(!t.offsetParent)return;fit();align();hang();balance()}
+window.euFitTitle=run;
 run();addEventListener("resize",run);document.fonts&&document.fonts.ready.then(run);setTimeout(run,600)})();
 </script>
 <div class="ths" id="thSheet" role="dialog" aria-modal="true" aria-label="Elegir estilo de la app" hidden><div class="thsb"><div class="thh"><b>Estilo de la app</b><button type="button" class="thx" id="thClose" aria-label="Cerrar">✕</button></div><div class="thrw"><button type="button" class="tha l" aria-label="Anterior">‹</button><div class="thc">
